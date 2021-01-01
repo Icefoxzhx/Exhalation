@@ -53,15 +53,15 @@ always @(posedge clk) begin
 				mem_wr<=`Read;
 				case(type_i)
 					2'b11: begin
-						state<=5'b10100;
+						state<=5'b11100;
 						mem_a<=ram_addr_i+3;
 					end
 					2'b01: begin
-						state<=5'b10010;
+						state<=5'b11010;
 						mem_a<=ram_addr_i+1;
 					end
 					2'b00: begin
-						state<=5'b10001;
+						state<=5'b11001;
 						mem_a<=ram_addr_i;
 					end
 				endcase
@@ -73,12 +73,12 @@ always @(posedge clk) begin
 				mem_wr<=`Write;
 				case(type_i)
 					2'b11: begin
-						state<=5'b11100;
+						state<=5'b10100;
 						mem_a<=ram_addr_i+3;
 						mem_dout<=ram_data_i[31:24];
 					end
 					2'b01: begin
-						state<=5'b11010;
+						state<=5'b10010;
 						mem_a<=ram_addr_i+1;
 						mem_dout<=ram_data_i[15:8];
 					end
@@ -94,7 +94,7 @@ always @(posedge clk) begin
 				inst_ok<=`False;
 				addr0<=inst_fpc;
 				mem_wr<=`Read;
-				state<=5'b00100;
+				state<=5'b01100;
 				mem_a<=inst_fpc+3;
 			end else begin
 				ram_done_o<=`False;
@@ -103,35 +103,38 @@ always @(posedge clk) begin
 				mem_a<=`ZeroWord;
 				mem_wr<=`Read;
 			end
-		end else if(state[3]==`Read) begin
+		end else if(state[3]!=`Read) begin//Read
 			ram_done_o<=`False;
 			inst_ok<=`False;
 			if(state[4]==`Inst&&inst_fe&&inst_fpc!=addr0) begin//branch restart fetch
 				addr0<=inst_fpc;
 				mem_wr<=`Read;
-				state<=5'b00100;
+				state<=5'b01100;
 				mem_a<=inst_fpc+3;
 			end else begin
 				case(state[2:0])
-					3'b100: begin
-						data[31:24]<=mem_din;
+					3'b100: begin						
 						mem_a<=addr0+2;
 						mem_wr<=`Read;
 						state[2:0]<=3'b011;
 					end
 					3'b011: begin
-						data[23:16]<=mem_din;
+						data[31:24]<=mem_din;						
 						mem_a<=addr0+1;
 						mem_wr<=`Read;
 						state[2:0]<=3'b010;
 					end
 					3'b010: begin
-						data[15:8]<=mem_din;
+						data[23:16]<=mem_din;						
 						mem_a<=addr0;
 						mem_wr<=`Read;
 						state[2:0]<=3'b001;
 					end
 					3'b001: begin
+						data[15:8]<=mem_din;
+						state[2:0]<=3'b000;
+					end
+					3'b000: begin
 						data[7:0]<=mem_din;
 						if(state[4]==`Inst) begin
 							inst_ok<=`True;
@@ -141,7 +144,7 @@ always @(posedge clk) begin
 							ram_done_o<=`True;
 							ram_data_o<={data[31:8],mem_din};
 						end
-						state<=5'b0;
+						state<=5'b000;
 					end
 				endcase
 			end

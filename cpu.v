@@ -82,11 +82,10 @@ wire mem_stall;
 
 wire[`InstAddrBus] if_pc;
 wire[`InstBus] if_inst;
-wire[`InstBus] mem_ctrl_inst;
 
+wire[`InstBus] mem_ctrl_inst;
 wire inst_fe;
 wire[`InstAddrBus] inst_fpc;
-wire[`InstBus] mem_crtl_inst;
 wire inst_ok;
 wire[`InstBus] inst_pc;
 
@@ -108,7 +107,7 @@ regfile regfile0(
 IF if0(
   .clk(clk_in),.rst(rst_in),
   .b_flag_i(b_flag),.b_tar_i(b_tar),
-  .inst_i(mem_crtl_inst),.inst_ok(inst_ok),.inst_pc(inst_pc),
+  .inst_i(mem_ctrl_inst),.inst_ok(inst_ok),.inst_pc(inst_pc),
   .stall_state(stall_state),
   .pc_o(if_pc),.inst_o(if_inst),
   .inst_fe(inst_fe),.inst_fpc(inst_fpc),
@@ -193,7 +192,6 @@ mem_wb mem_wb0(
 );
 
 stall stall0(
-  .rst(rst_in),
   .if_stall(if_stall),.id_stall(id_stall),.mem_stall(mem_stall),
   .stall_state(stall_state)
 );

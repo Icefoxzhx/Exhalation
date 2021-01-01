@@ -38,87 +38,95 @@ always @(*) begin
 	end else begin
 		w_addr_o=w_addr_i;
 		w_req_o=w_req_i;
+		ram_r_req_o=`False;
+		ram_w_req_o=`False;
+		mem_stall=`False;
 		case(aluop_i)
 			`EX_NOP:begin
 				w_data_o=w_data_i;
-				ram_r_req_o=`False;
-				ram_w_req_o=`False;
 				ram_w_data_o=`ZeroWord;
 				ram_addr_o=`ZeroWord;
 				ram_state=2'h0;
-				mem_stall=`False;
 			end
 			`EX_LB:begin
 				w_data_o={{24{ram_r_data_i[7]}},ram_r_data_i[7:0]};
-				ram_r_req_o=`True;
-				ram_w_req_o=`False;
+				if(!ram_done_i) begin
+					ram_r_req_o=`True;
+					mem_stall=`True;
+				end
 				ram_w_data_o=`ZeroWord;
 				ram_addr_o=addr_i;
 				ram_state=2'h0;
-				mem_stall=!ram_done_i;
 			end
 			`EX_LBU:begin
 				w_data_o={24'b0,ram_r_data_i[7:0]};
-				ram_r_req_o=`True;
-				ram_w_req_o=`False;
+				if(!ram_done_i) begin
+					ram_r_req_o=`True;
+					mem_stall=`True;
+				end
 				ram_w_data_o=`ZeroWord;
 				ram_addr_o=addr_i;
 				ram_state=2'h0;
-				mem_stall=!ram_done_i;
 			end
 			`EX_LH:begin
 				w_data_o={{16{ram_r_data_i[15]}},ram_r_data_i[15:0]};
-				ram_r_req_o=`True;
-				ram_w_req_o=`False;
+				if(!ram_done_i) begin
+					ram_r_req_o=`True;
+					mem_stall=`True;
+				end
 				ram_w_data_o=`ZeroWord;
 				ram_addr_o=addr_i;
 				ram_state=2'b01;
-				mem_stall=!ram_done_i;
 			end
 			`EX_LHU:begin
 				w_data_o={16'b0,ram_r_data_i[15:0]};
-				ram_r_req_o=`True;
-				ram_w_req_o=`False;
+				if(!ram_done_i) begin
+					ram_r_req_o=`True;
+					mem_stall=`True;
+				end
 				ram_w_data_o=`ZeroWord;
 				ram_addr_o=addr_i;
 				ram_state=2'b01;
-				mem_stall=!ram_done_i;
 			end
 			`EX_LW:begin
 				w_data_o=ram_r_data_i;
-				ram_r_req_o=`True;
-				ram_w_req_o=`False;
+				if(!ram_done_i) begin
+					ram_r_req_o=`True;
+					mem_stall=`True;
+				end
 				ram_w_data_o=`ZeroWord;
 				ram_addr_o=addr_i;
 				ram_state=2'b11;
-				mem_stall=!ram_done_i;
 			end
 			`EX_SB:begin
 				w_data_o=w_data_i;
-				ram_r_req_o=`False;
-				ram_w_req_o=`True;
+				if(!ram_done_i) begin
+					ram_w_req_o=`True;
+					mem_stall=`True;
+				end
 				ram_w_data_o=w_data_i;
 				ram_addr_o=addr_i;
 				ram_state=2'b00;
-				mem_stall=!ram_done_i;
 			end
 			`EX_SH:begin
 				w_data_o=w_data_i;
-				ram_r_req_o=`False;
-				ram_w_req_o=`True;
+				if(!ram_done_i) begin
+					ram_w_req_o=`True;
+					mem_stall=`True;
+				end
 				ram_w_data_o=w_data_i;
 				ram_addr_o=addr_i;
 				ram_state=2'b01;
-				mem_stall=!ram_done_i;
 			end
 			`EX_SW:begin
 				w_data_o=w_data_i;
-				ram_r_req_o=`False;
-				ram_w_req_o=`True;
+				if(!ram_done_i) begin
+					ram_w_req_o=`True;
+					mem_stall=`True;
+				end
 				ram_w_data_o=w_data_i;
 				ram_addr_o=addr_i;
 				ram_state=2'b11;
-				mem_stall=!ram_done_i;
 			end
 		endcase
 	end

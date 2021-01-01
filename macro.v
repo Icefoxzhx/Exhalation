@@ -34,6 +34,8 @@
 `define TagBits 17:10
 `define IndexBits 9:2
 `define ICacheLines 256
+`define ValidBit 7
+`define Invalid 1'b1
 
 `define AluOpBus 4:0
 

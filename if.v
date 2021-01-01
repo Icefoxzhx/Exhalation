@@ -22,33 +22,34 @@ module IF(
 
 //I-cache
 reg[`TagBus] tag[`ICacheLines-1:0];
+//ValidBit tag[7]=0 if Valid(since addr are all lower than 0x20000)
 reg[`InstBus] inst[`ICacheLines-1:0];
-reg[`ICacheLines-1:0] valid;
 
 assign inst_fe=tag[inst_fpc[`IndexBits]]!=inst_fpc[`TagBits] & ~inst_ok;
 
 always @(posedge clk) begin
 	if(rst==`RstEnable) begin
-		pc_o <= `ZeroWord;
+		pc_o<=`ZeroWord;
+	end else if(b_flag_i) begin
+		pc_o<=b_tar_i;
 	end else if(stall_state[0]==`False) begin
-		if(b_flag_i) begin
-			pc_o <= b_tar_i;
-		end else begin
-			pc_o<=pc_o+4;
-		end
+		pc_o<=pc_o+4;
 	end
 end
 
+integer i;
+
 always @(posedge clk) begin
 	if(rst==`RstEnable) begin
+		for(i=0;i<`ICacheLines;i=i+1) begin
+			tag[i][`ValidBit]<=`Invalid;
+		end
 		inst_fpc<=`ZeroWord;
-		valid<=`ICacheLines'b0;
 	end else begin
 		if(inst_ok) begin
 			tag[inst_pc[`IndexBits]]<=inst_pc[`TagBits];
 			inst[inst_pc[`IndexBits]]<=inst_i;
 			inst_fpc<=pc_o+4;
-			valid[inst_pc[`IndexBits]]<=`True;
 		end else begin
 			inst_fpc<=pc_o;
 		end
@@ -59,7 +60,7 @@ always @(*) begin
 	if(rst==`RstEnable) begin
 		inst_o=`ZeroWord;
 		if_stall=`False;
-	end else if(valid[pc_o[`IndexBits]]&&tag[pc_o[`IndexBits]]==pc_o[`TagBits]) begin
+	end else if(tag[pc_o[`IndexBits]]==pc_o[`TagBits]) begin
 		if_stall=`False;
 		inst_o=inst[pc_o[`IndexBits]];
 	end else if(inst_ok&&inst_pc==pc_o) begin

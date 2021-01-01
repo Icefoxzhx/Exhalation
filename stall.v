@@ -1,5 +1,4 @@
 module stall(
-	input wire rst,
 	input wire if_stall,
 	input wire id_stall,
 	input wire mem_stall,
@@ -7,7 +6,7 @@ module stall(
 );
 
 always @(*) begin
-	if((rst==`RstEnable)||(mem_stall==`True))
+	if(mem_stall==`True)
 		stall_state=`MemStall;
 	else if (id_stall==`True)
 		stall_state=`IdStall;

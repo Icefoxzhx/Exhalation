@@ -71,6 +71,7 @@ always @(*) begin
 				mem_addr_o=r1_i+offset_i;
 				is_ld=`False;
 				aluop_o=aluop_i;
+				w_data_o=r2_i;
 			end
 			`EX_LB,`EX_LH,`EX_LW,`EX_LBU,`EX_LHU: begin
 				mem_addr_o=r1_i+offset_i;
@@ -107,6 +108,15 @@ always @(*) begin
 			end
 			`EX_BLT: begin
 				if($signed(r1_i)<$signed(r2_i)) begin
+					b_tar_o=pc_i+offset_i;
+					b_flag_o=`True;
+				end else begin
+					b_tar_o=pc_i+4;
+					b_flag_o=`False;
+				end
+			end
+			`EX_BLTU: begin
+				if(r1_i<r2_i) begin
 					b_tar_o=pc_i+offset_i;
 					b_flag_o=`True;
 				end else begin
