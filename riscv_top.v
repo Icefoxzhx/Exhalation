@@ -10,7 +10,7 @@ module riscv_top
 	input wire			btnC,
 	output wire 		Tx,
 	input wire 			Rx,
-	output wire[15:0]		led
+	output wire[15:0]	led
 );
 
 localparam SYS_CLK_FREQ = 100000000;

@@ -1,6 +1,7 @@
 module mem(
 	input wire rst,
-
+	input wire rdy,
+	
 	input wire[`RegAddrBus] w_addr_i,
 	input wire w_req_i,
 	input wire[`RegBus] w_data_i,
@@ -25,7 +26,7 @@ module mem(
 );
 
 always @(*) begin
-	if(rst==`RstEnable) begin
+	if(rdy==`False||rst==`True) begin
 		w_addr_o=`NOPRegAddr;
 		w_req_o=`False;
 		w_data_o=`ZeroWord;

@@ -1,6 +1,7 @@
 module regfile(
 	input wire clk,
 	input wire rst,
+	input wire rdy,
 
 	input wire w_req,
 	input wire[`RegAddrBus] w_addr,
@@ -19,19 +20,21 @@ reg[`RegBus] regs[0:`RegNum-1];
 integer i;
 
 always @(posedge clk) begin
-	if(rst==`RstEnable) begin
-		for(i=0;i<`RegNum;i=i+1)
-			regs[i]<=`ZeroWord;
-	end else begin
-		if((w_req==`True)&&(w_addr!=`RegAddrLen'h0)) begin
-			regs[w_addr]<=w_data;
+	if(rdy==`True) begin
+		if(rst==`True) begin
+			for(i=0;i<`RegNum;i=i+1)
+				regs[i]<=`ZeroWord;
+		end else begin
+			if((w_req==`True)&&(w_addr!=`RegAddrLen'h0)) begin
+				regs[w_addr]<=w_data;
+			end
 		end
 	end
 end
 
 always @(*) begin
 	r1_data=`ZeroWord;
-	if((rst!=`RstEnable)&&(r1_req==`True) ) begin
+	if((rdy==`True)&&(rst==`False)&&(r1_req==`True) ) begin
 		if(r1_addr==`RegAddrLen'h0)
 			r1_data=`ZeroWord;
 		else if((r1_addr==w_addr)&&(w_req==`True))
@@ -43,7 +46,7 @@ end
 
 always @(*) begin
 	r2_data=`ZeroWord;
-	if((rst!=`RstEnable)&&(r2_req==`True) ) begin
+	if((rdy==`True)&&(rst==`False)&&(r2_req==`True) ) begin
 		if(r2_addr==`RegAddrLen'h0)
 			r2_data=`ZeroWord;
 		else if((r2_addr==w_addr)&&(w_req==`True))

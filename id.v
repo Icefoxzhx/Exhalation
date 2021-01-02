@@ -1,5 +1,7 @@
 module id(
 	input wire rst,
+	input wire rdy,
+	
 	input wire[`InstAddrBus] pc_i,
 	input wire[`InstBus] inst_i,
 
@@ -55,7 +57,7 @@ always @(*) begin
 	r2_addr_o=rs2;
 	pc_o=pc_i;
 	offset_o=`ZeroWord;
-	if(rst!=`RstEnable) begin
+	if(rdy==`True&&rst==`False) begin
 		case(opcode)
 			`OPI:begin
 				w_req_o=`True;
@@ -251,7 +253,7 @@ end
 always @(*) begin
 	r1_stall=`False;
 	r1_o=`ZeroWord;
-	if(rst!=`RstEnable) begin
+	if(rdy==`True&&rst==`False) begin
 		if(r1_req_o==`True) begin
 			if(ex_ld_flag==`True && ex_w_addr_i==r1_addr_o) begin
 				r1_stall=`True;
@@ -271,7 +273,7 @@ end
 always @(*) begin
 	r2_stall=`False;
 	r2_o=`ZeroWord;
-	if(rst!=`RstEnable) begin
+	if(rdy==`True&&rst==`False) begin
 		if(r2_req_o==`True) begin
 			if(ex_ld_flag==`True && ex_w_addr_i==r2_addr_o) begin
 				r2_stall=`True;

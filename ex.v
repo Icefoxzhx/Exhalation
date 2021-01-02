@@ -1,5 +1,7 @@
 module ex(
 	input wire rst,
+	input wire rdy,
+	
 	input wire[`InstAddrBus] pc_i,
 
 	input wire[`AluOpBus] aluop_i,
@@ -30,7 +32,7 @@ always @(*) begin
 	aluop_o=`EX_NOP;
 	mem_addr_o=`ZeroWord;
 	is_ld=`False;
-	if(rst!=`RstEnable) begin
+	if(rdy==`True&&rst==`False) begin
 		w_addr_o=w_addr_i;
 		w_req_o=w_req_i;
 		case(aluop_i)
@@ -141,9 +143,6 @@ always @(*) begin
 					b_tar_o=pc_i+4;
 					b_flag_o=`False;
 				end
-			end
-			default:begin
-				
 			end
 		endcase
 	end
