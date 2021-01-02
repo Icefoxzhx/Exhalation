@@ -96,16 +96,20 @@ wire[`RegBus] ram_r_data;
 wire[1:0] ram_state;
 wire[`RegBus] ram_addr;
 wire ram_done;
+wire rst;
+
+assign dbgreg_dout=if_pc;
+assign rst=rst_in|(~rdy_in);
 
 regfile regfile0(
-  .clk(clk_in),.rst(rst_in),
+  .clk(clk_in),.rst(rst),
   .w_req(wb_w_req),.w_addr(wb_w_addr),.w_data(wb_w_data),
   .r1_req(r1_req),.r1_addr(r1_addr),.r1_data(r1_data),
   .r2_req(r2_req),.r2_addr(r2_addr),.r2_data(r2_data)
 );
 
 IF if0(
-  .clk(clk_in),.rst(rst_in),
+  .clk(clk_in),.rst(rst),
   .b_flag_i(b_flag),.b_tar_i(b_tar),
   .inst_i(mem_ctrl_inst),.inst_ok(inst_ok),.inst_pc(inst_pc),
   .stall_state(stall_state),
@@ -115,14 +119,14 @@ IF if0(
 );
 
 if_id if_id0(
-  .clk(clk_in),.rst(rst_in),
+  .clk(clk_in),.rst(rst),
   .if_pc(if_pc),.if_inst(if_inst),
   .b_flag_i(b_flag),.stall_state(stall_state),
   .id_pc(id_pc_i),.id_inst(id_inst_i)
 );
 
 id id0(
-  .rst(rst_in),
+  .rst(rst),
   .pc_i(id_pc_i),.inst_i(id_inst_i),
   .r1_data_i(r1_data),.r2_data_i(r2_data),
   .ex_ld_flag(ex_ld_flag),.ex_w_req_i(ex_w_req_o),.ex_w_data_i(ex_w_data_o),.ex_w_addr_i(ex_w_addr_o),
@@ -135,7 +139,7 @@ id id0(
 );
 
 id_ex id_ex0(
-  .clk(clk_in),.rst(rst_in),
+  .clk(clk_in),.rst(rst),
   .id_aluop(id_aluop_o),.id_r1(id_r1_o),.id_r2(id_r2_o),
   .id_w_addr(id_w_addr_o),.id_w_req(id_w_req_o),
   .id_pc(id_pc_o),.id_offset(id_offset_o),
@@ -146,7 +150,7 @@ id_ex id_ex0(
 );
 
 ex ex0(
-  .rst(rst_in),
+  .rst(rst),
   .pc_i(ex_pc_i),.aluop_i(ex_aluop_i),.r1_i(ex_r1_i),.r2_i(ex_r2_i),
   .w_addr_i(ex_w_addr_i),.w_req_i(ex_w_req_i),.offset_i(ex_offset_i),
   .w_addr_o(ex_w_addr_o),.w_req_o(ex_w_req_o),.w_data_o(ex_w_data_o),
@@ -155,7 +159,7 @@ ex ex0(
 );
 
 ex_mem ex_mem0(
-  .clk(clk_in),.rst(rst_in),
+  .clk(clk_in),.rst(rst),
   .ex_w_addr(ex_w_addr_o),.ex_w_req(ex_w_req_o),.ex_w_data(ex_w_data_o),
   .ex_mem_addr(ex_mem_addr),.ex_aluop(ex_aluop_o),
   .stall_state(stall_state),
@@ -164,7 +168,7 @@ ex_mem ex_mem0(
 );
 
 mem mem0(
-  .rst(rst_in),
+  .rst(rst),
   .w_addr_i(mem_w_addr_i),.w_req_i(mem_w_req_i),.w_data_i(mem_w_data_i),
   .aluop_i(mem_aluop_i),.addr_i(mem_mem_addr),
   .ram_done_i(ram_done),.ram_r_data_i(ram_r_data),
@@ -175,7 +179,7 @@ mem mem0(
 );
 
 mem_ctrl mem_ctrl0(
-  .clk(clk_in),.rst(rst_in),
+  .clk(clk_in),.rst(rst),
   .ram_r_req_i(ram_r_req),.ram_w_req_i(ram_w_req),.ram_addr_i(ram_addr),
   .ram_data_i(ram_w_data),.type_i(ram_state),
   .inst_fe(inst_fe),.inst_fpc(inst_fpc),
@@ -185,7 +189,7 @@ mem_ctrl mem_ctrl0(
 );
 
 mem_wb mem_wb0(
-  .clk(clk_in),.rst(rst_in),
+  .clk(clk_in),.rst(rst),
   .mem_w_addr(mem_w_addr_o),.mem_w_req(mem_w_req_o),.mem_w_data(mem_w_data_o),
   .stall_state(stall_state),
   .wb_w_addr(wb_w_addr),.wb_w_req(wb_w_req),.wb_w_data(wb_w_data)

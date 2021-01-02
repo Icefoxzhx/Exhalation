@@ -41,22 +41,19 @@ always @(*) begin
 		ram_r_req_o=`False;
 		ram_w_req_o=`False;
 		mem_stall=`False;
+		w_data_o=w_data_i;
+		ram_addr_o=`ZeroWord;
+		ram_w_data_o=`ZeroWord;
+		ram_state=2'b0;
 		case(aluop_i)
-			`EX_NOP:begin
-				w_data_o=w_data_i;
-				ram_w_data_o=`ZeroWord;
-				ram_addr_o=`ZeroWord;
-				ram_state=2'h0;
-			end
 			`EX_LB:begin
 				w_data_o={{24{ram_r_data_i[7]}},ram_r_data_i[7:0]};
 				if(!ram_done_i) begin
 					ram_r_req_o=`True;
 					mem_stall=`True;
 				end
-				ram_w_data_o=`ZeroWord;
 				ram_addr_o=addr_i;
-				ram_state=2'h0;
+				ram_state=2'b0;
 			end
 			`EX_LBU:begin
 				w_data_o={24'b0,ram_r_data_i[7:0]};
@@ -64,9 +61,8 @@ always @(*) begin
 					ram_r_req_o=`True;
 					mem_stall=`True;
 				end
-				ram_w_data_o=`ZeroWord;
 				ram_addr_o=addr_i;
-				ram_state=2'h0;
+				ram_state=2'b0;
 			end
 			`EX_LH:begin
 				w_data_o={{16{ram_r_data_i[15]}},ram_r_data_i[15:0]};
@@ -74,7 +70,6 @@ always @(*) begin
 					ram_r_req_o=`True;
 					mem_stall=`True;
 				end
-				ram_w_data_o=`ZeroWord;
 				ram_addr_o=addr_i;
 				ram_state=2'b01;
 			end
@@ -84,7 +79,6 @@ always @(*) begin
 					ram_r_req_o=`True;
 					mem_stall=`True;
 				end
-				ram_w_data_o=`ZeroWord;
 				ram_addr_o=addr_i;
 				ram_state=2'b01;
 			end
@@ -94,12 +88,10 @@ always @(*) begin
 					ram_r_req_o=`True;
 					mem_stall=`True;
 				end
-				ram_w_data_o=`ZeroWord;
 				ram_addr_o=addr_i;
 				ram_state=2'b11;
 			end
 			`EX_SB:begin
-				w_data_o=w_data_i;
 				if(!ram_done_i) begin
 					ram_w_req_o=`True;
 					mem_stall=`True;
@@ -109,7 +101,6 @@ always @(*) begin
 				ram_state=2'b00;
 			end
 			`EX_SH:begin
-				w_data_o=w_data_i;
 				if(!ram_done_i) begin
 					ram_w_req_o=`True;
 					mem_stall=`True;
@@ -119,7 +110,6 @@ always @(*) begin
 				ram_state=2'b01;
 			end
 			`EX_SW:begin
-				w_data_o=w_data_i;
 				if(!ram_done_i) begin
 					ram_w_req_o=`True;
 					mem_stall=`True;

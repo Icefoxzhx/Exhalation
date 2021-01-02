@@ -21,13 +21,13 @@ module mem_ctrl(
 	output reg[`InstAddrBus] inst_pc,
 
 	output reg[`RAMBus] mem_dout,
-	output reg[`RAMAddrBus] mem_a,
+	output reg[`MemBus] mem_a,
 	output reg mem_wr
 
 );
 
 reg[4:0] state;//4--I/D 3--R/W 2:0--stage
-reg[`RAMAddrBus] addr0;
+reg[`MemBus] addr0;
 reg[`RegBus] data;
 
 always @(posedge clk) begin
@@ -169,7 +169,7 @@ always @(posedge clk) begin
 					mem_a<=addr0;
 					mem_wr<=`Write;
 					state<=5'b0;
-					ram_done_o=`True;
+					ram_done_o<=`True;
 				end
 			endcase
 		end

@@ -15,7 +15,6 @@
 `define InstAddrBus 31:0
 `define InstBus 31:0
 `define RAMBus 7:0
-`define RAMAddrBus 31:0
 `define MemBus 31:0
 `define StallBus 3:0
 

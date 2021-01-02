@@ -10,7 +10,7 @@ module riscv_top
 	input wire			btnC,
 	output wire 		Tx,
 	input wire 			Rx,
-	output wire			led
+	output wire[15:0]		led
 );
 
 localparam SYS_CLK_FREQ = 100000000;
@@ -112,6 +112,8 @@ cpu cpu0(
 	.dbgreg_dout(cpu_dbgreg_dout)
 );
 
+assign led[15:1]=cpu_dbgreg_dout[14:0];
+
 hci #(.SYS_CLK_FREQ(SYS_CLK_FREQ),
 	.RAM_ADDR_WIDTH(RAM_ADDR_WIDTH),
 	.BAUD_RATE(UART_BAUD_RATE)) hci0
@@ -147,7 +149,7 @@ wire hci_active;
 assign hci_active 	= hci_active_out & ~SIM;
 
 // indicates debug break
-assign led = hci_active;
+assign led[0] = hci_active;
 
 // pause cpu on hci active
 assign cpu_rdy		= (hci_active) ? 1'b0			 : 1'b1;
