@@ -74,7 +74,7 @@ always @(posedge clk) begin
 					addr0<=ram_addr_i;
 					data<=ram_data_i;
 					mem_wr<=`Write;
-					if(ram_addr_i==32'h30000) begin//Write 0x30000
+					if(ram_addr_i>=32'h30000) begin//Write 0x30000
 						state<=5'b10111;
 						mem_a<=`ZeroWord;
 						mem_wr<=`Read;
