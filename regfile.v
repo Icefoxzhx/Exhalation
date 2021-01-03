@@ -20,14 +20,12 @@ reg[`RegBus] regs[0:`RegNum-1];
 integer i;
 
 always @(posedge clk) begin
-	if(rdy==`True) begin
-		if(rst==`True) begin
-			for(i=0;i<`RegNum;i=i+1)
-				regs[i]<=`ZeroWord;
-		end else begin
-			if((w_req==`True)&&(w_addr!=`RegAddrLen'h0)) begin
-				regs[w_addr]<=w_data;
-			end
+	if(rst==`True) begin
+		for(i=0;i<`RegNum;i=i+1)
+			regs[i]<=`ZeroWord;
+	end else if(rdy==`True) begin
+		if((w_req==`True)&&(w_addr!=`RegAddrLen'h0)) begin
+			regs[w_addr]<=w_data;
 		end
 	end
 end

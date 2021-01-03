@@ -27,17 +27,17 @@ module id_ex(
 );
 
 always @(posedge clk) begin
-	if(rdy==`True) begin
-		if(rst==`True)begin
-			ex_aluop<=`EX_NOP;
-			ex_r1<=`ZeroWord;
-			ex_r2<=`ZeroWord;
-			ex_w_addr<=`NOPRegAddr;
-			ex_w_req<=`False;
-			ex_pc<=`ZeroWord;
-			ex_offset<=`ZeroWord;
-			ex_taken<=`False;
-		end else if(stall_state[2]==`False) begin
+	if(rst==`True)begin
+		ex_aluop<=`EX_NOP;
+		ex_r1<=`ZeroWord;
+		ex_r2<=`ZeroWord;
+		ex_w_addr<=`NOPRegAddr;
+		ex_w_req<=`False;
+		ex_pc<=`ZeroWord;
+		ex_offset<=`ZeroWord;
+		ex_taken<=`False;
+	end else if(rdy==`True) begin
+		if(stall_state[2]==`False) begin
 			if(stall_state[1]==`False && b_flag_i!=`True) begin
 				ex_aluop<=id_aluop;
 				ex_r1<=id_r1;

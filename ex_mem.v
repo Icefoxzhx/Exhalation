@@ -20,14 +20,14 @@ module ex_mem(
 );
 
 always @(posedge clk) begin
-	if(rdy==`True) begin
-		if(rst==`True) begin
-			mem_w_addr<=`NOPRegAddr;
-			mem_w_req<=`False;
-			mem_w_data<=`ZeroWord;
-			mem_aluop<=`EX_NOP;
-			mem_mem_addr<=`ZeroWord;
-		end else if(stall_state[3]==`False) begin
+	if(rst==`True) begin
+		mem_w_addr<=`NOPRegAddr;
+		mem_w_req<=`False;
+		mem_w_data<=`ZeroWord;
+		mem_aluop<=`EX_NOP;
+		mem_mem_addr<=`ZeroWord;
+	end else if(rdy==`True) begin
+		if(stall_state[3]==`False) begin
 			mem_w_addr<=ex_w_addr;
 			mem_w_req<=ex_w_req;
 			mem_w_data<=ex_w_data;

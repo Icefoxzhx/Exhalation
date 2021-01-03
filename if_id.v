@@ -15,11 +15,11 @@ module if_id(
 );
 
 always @(posedge clk) begin
-	if(rdy==`True) begin
-		if(rst==`True) begin
-			id_inst<=`ZeroWord;
-			id_pc<=`ZeroWord;
-		end else if (stall_state[1]==`False) begin
+	if(rst==`True) begin
+		id_inst<=`ZeroWord;
+		id_pc<=`ZeroWord;
+	end else if(rdy==`True) begin
+		if (stall_state[1]==`False) begin
 			if(b_flag_i) begin
 				id_inst<=`ZeroWord;
 				id_pc<=`ZeroWord;

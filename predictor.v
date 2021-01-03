@@ -20,13 +20,13 @@ reg[1:0] BHT[`PSize-1:0];
 integer i;
 
 always @(posedge clk) begin
-	if(rdy) begin
-		if (rst) begin
-			for(i=0;i<`PSize;i=i+1) begin
-				tag[i][`PValidBit]<=`Invalid;
-				BHT[i]<=2'b10;
-			end
-		end else if (is_branch) begin
+	if (rst) begin
+		for(i=0;i<`PSize;i=i+1) begin
+			tag[i][`PValidBit]<=`Invalid;
+			BHT[i]<=2'b10;
+		end
+	end else if(rdy) begin
+		if (is_branch) begin
 			tag[ex_pc[`PIndexBits]]<=ex_pc[`PTagBits];
 			BTB[ex_pc[`PIndexBits]]<=b_tar_i;
 			if(taken_i&&BHT[ex_pc[`PIndexBits]]<2'h3) BHT[ex_pc[`PIndexBits]]<=BHT[ex_pc[`PIndexBits]]+1;

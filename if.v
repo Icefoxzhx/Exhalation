@@ -34,11 +34,11 @@ reg[`InstBus] inst[`ICacheLines-1:0];
 assign inst_fe=tag[inst_fpc[`IndexBits]]!=inst_fpc[`TagBits] & ~inst_ok;
 
 always @(posedge clk) begin
-	if(rdy==`True) begin
-		if(rst==`True) begin
-			pc_o<=`ZeroWord;
-			taken_o<=`False;
-		end else if(ex_b_flag_i==`True) begin
+	if(rst==`True) begin
+		pc_o<=`ZeroWord;
+		taken_o<=`False;
+	end else if(rdy==`True) begin
+		if(ex_b_flag_i==`True) begin
 			pc_o<=ex_b_tar_i;
 			taken_o<=`False;
 		end else if(stall_state[0]==`False) begin
@@ -56,20 +56,18 @@ end
 integer i;
 
 always @(posedge clk) begin
-	if(rdy==`True) begin
-		if(rst==`True) begin
-			for(i=0;i<`ICacheLines;i=i+1) begin
-				tag[i][`ValidBit]<=`Invalid;
-			end
-			inst_fpc<=`ZeroWord;
+	if(rst==`True) begin
+		for(i=0;i<`ICacheLines;i=i+1) begin
+			tag[i][`ValidBit]<=`Invalid;
+		end
+		inst_fpc<=`ZeroWord;
+	end else if(rdy==`True) begin
+		if(inst_ok) begin
+			tag[inst_pc[`IndexBits]]<=inst_pc[`TagBits];
+			inst[inst_pc[`IndexBits]]<=inst_i;
+			inst_fpc<=pc_o+4;
 		end else begin
-			if(inst_ok) begin
-				tag[inst_pc[`IndexBits]]<=inst_pc[`TagBits];
-				inst[inst_pc[`IndexBits]]<=inst_i;
-				inst_fpc<=pc_o+4;
-			end else begin
-				inst_fpc<=pc_o;
-			end
+			inst_fpc<=pc_o;
 		end
 	end
 end
