@@ -10,12 +10,17 @@ module riscv_top
 	input wire			btnC,
 	output wire 		Tx,
 	input wire 			Rx,
-	output wire[15:0]	led
+	output wire[15:0]	led,
+	output wire [6:0]	seg,
+	output wire		dp,
+	output wire [3:0]	an
 );
 
 localparam SYS_CLK_FREQ = 100000000;
 localparam UART_BAUD_RATE = 115200;
 localparam RAM_ADDR_WIDTH = 17; 			// 128KiB ram, should not be modified
+
+localparam DISPLAY_REFRESH_RATE = 500000;
 
 reg rst;
 reg rst_delay;
@@ -147,6 +152,19 @@ assign hci_io_din	= cpumc_din;
 // hci is always disabled in simulation
 wire hci_active;
 assign hci_active 	= hci_active_out & ~SIM;
+
+// seven segment display pc
+display_ctrl #(.SYS_CLK_FREQ(SYS_CLK_FREQ),
+			 .DISPLAY_REFRESH_RATE(DISPLAY_REFRESH_RATE)) display_ctrl0
+(
+	.clk(clk),
+	.rst(rst),
+	.en(!SIM),
+	.val(cpu_dbgreg_dout[15:0]),
+	.seg(seg),
+	.dp(dp),
+	.an(an)
+);
 
 // indicates debug break
 assign led[0] = hci_active;

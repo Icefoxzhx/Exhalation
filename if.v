@@ -3,8 +3,11 @@ module IF(
 	input wire rst,
 	input wire rdy,
 
-	input wire b_flag_i,
-	input wire[`InstAddrBus] b_tar_i,
+	input wire ex_b_flag_i,
+	input wire[`InstAddrBus] ex_b_tar_i,
+
+	input wire taken_i,
+	input wire[`InstAddrBus] P_b_tar_i,
 
 	input wire[`InstBus] inst_i,
 	input wire inst_ok,
@@ -17,6 +20,8 @@ module IF(
 	
 	output wire inst_fe,
 	output reg[`InstAddrBus] inst_fpc,
+
+	output reg taken_o,
 
 	output reg if_stall
 );
@@ -32,10 +37,18 @@ always @(posedge clk) begin
 	if(rdy==`True) begin
 		if(rst==`True) begin
 			pc_o<=`ZeroWord;
-		end else if(b_flag_i) begin
-			pc_o<=b_tar_i;
+			taken_o<=`False;
+		end else if(ex_b_flag_i==`True) begin
+			pc_o<=ex_b_tar_i;
+			taken_o<=`False;
 		end else if(stall_state[0]==`False) begin
-			pc_o<=pc_o+4;
+			if(taken_i==`True) begin
+				pc_o<=P_b_tar_i;
+				taken_o<=`True;
+			end else begin
+				pc_o<=pc_o+4;
+				taken_o<=`False;			
+			end
 		end
 	end
 end

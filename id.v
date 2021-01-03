@@ -4,6 +4,7 @@ module id(
 	
 	input wire[`InstAddrBus] pc_i,
 	input wire[`InstBus] inst_i,
+	input wire taken_i,
 
 	input wire[`RegBus] r1_data_i,
 	input wire[`RegBus] r2_data_i,
@@ -23,6 +24,7 @@ module id(
 	output reg[`RegAddrBus] r2_addr_o,
 
 	output reg[`InstAddrBus] pc_o,
+	output reg taken_o,
 	output reg[`AluOpBus] aluop_o,
 	output reg[`RegBus] r1_o,
 	output reg[`RegBus] r2_o,
@@ -57,6 +59,7 @@ always @(*) begin
 	r2_addr_o=rs2;
 	pc_o=pc_i;
 	offset_o=`ZeroWord;
+	taken_o=taken_i;
 	if(rdy==`True&&rst==`False) begin
 		case(opcode)
 			`OPI:begin

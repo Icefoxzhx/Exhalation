@@ -93,7 +93,6 @@ always @(posedge clk) begin
 							2'b00: begin
 								mem_dout<=ram_data_i[7:0];
 								mem_a<=ram_addr_i;
-								mem_wr<=`Write;
 								state<=5'b0;
 								ram_done_o<=`True;
 							end

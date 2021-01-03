@@ -34,6 +34,12 @@
 `define ValidBit 7
 `define Invalid 1'b1
 
+`define PTagBus 8:0
+`define PTagBits 17:9
+`define PSize 128
+`define PIndexBits 8:2
+`define PValidBit 8
+
 `define AluOpBus 4:0
 
 `define LUI    7'b0110111
