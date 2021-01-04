@@ -1,34 +1,48 @@
-## MS108 Computer Architecture 2020 project: RISC-V CPU
+# RISC-V CPU
 
-519030910317 张洪鑫
-
-------
-
-
+MS108, Computer Architecture project in ACM class.
 
 ### Brief
 
-The project is a 5-stage pipelined RISC-V ISA CPU implemented in Verilog.
+Exhalation is a 5-stage pipelined RISC-V ISA CPU implemented in Verilog and supported on FPGA.
 
 ### Features
 
-a.
+- 1KB iCache, direct mapped.
+- Branch Prediction using 2-bit saturating counter BHT with Branch Target Buffer(Size is 128*4 Byte).
+- Running on FPGA with 200MHz
+- Data forwarding supported.
 
-​	Run on FPGA is ok.
+### Summary
 
-b.
+- Fixing io_buffer_full for uartboom: not only write 0x30000 needs to wait&&check, but also write 0x30004, otherwise the program won't finish.
 
-​	200MHz: ok.pi is 0.546s
+- Wrong forwarding when reading from reg[0], the same bug as PPCA!!!!! [it's ironic.]
 
-​	220MHz: heart failed. pi is 0.468s
+- Can't run on FPGA at first since I deal with *rdy* wrong, then forget to initialize some BHT/iCache ValidBits.
 
-c.
+- Don't have time to support CSR, dCache and try some other Prediction scheme. What's a pity.
 
-​	iCache: 1KB&&Direct Mapped
+- Maybe get going earlier next time.
 
-​	Branch Prediction: 128*4B 2-bit saturating counter BHT with Branch Target Buffer
+- Doing something with the FPGA is really interesting.(like manipulating with the leds)
 
-### Git
 
-git@github.com:Icefoxzhx/Exhalation.git
+### Reference
+
+- Thanks a lot to stneng,ZYHowell and many other people for helping me a lot.
+- Thanks Pioooooo for display_ctrl related codes.
+
+### Repo Structure
+
+```
+|--bit/                   A demo about how to create a project in Vivado
+|--common/                Provided UART and RAM
+|--Basys-3-Master.xdc     constraint file
+|--cpu.v                  My CPU 
+|--hci.v                  A bus between UART/RAM and CPU
+|--ram.v                  RAM
+|--riscv_top.v            Top design
+|--display_ctrl.v         Controller for the 4-digit 7-segment displayer on FPGA.
+```
 
