@@ -2,12 +2,9 @@
 
 MS108, Computer Architecture project in ACM class.
 
-### Brief
-
-Exhalation is a 5-stage pipelined RISC-V ISA CPU implemented in Verilog and supported on FPGA.
-
 ### Features
 
+- 5-stage pipelined
 - 1KB iCache, direct mapped.
 - Branch Prediction using 2-bit saturating counter BHT with Branch Target Buffer(Size is 128*4 Byte).
 - Running on FPGA with 200MHz
@@ -17,7 +14,7 @@ Exhalation is a 5-stage pipelined RISC-V ISA CPU implemented in Verilog and supp
 
 - Fixing io_buffer_full for uartboom: not only write 0x30000 needs to wait&&check, but also write 0x30004, otherwise the program won't finish.
 
-- Wrong forwarding when reading from reg[0], the same bug as PPCA!!!!! [it's ironic.]
+- Wrong forwarding when reading from reg[0], the same bug as PPCA!!!!! [it's **ironic**.]
 
 - Can't run on FPGA at first since I deal with *rdy* wrong, then forget to initialize some BHT/iCache ValidBits.
 
@@ -30,8 +27,8 @@ Exhalation is a 5-stage pipelined RISC-V ISA CPU implemented in Verilog and supp
 
 ### Reference
 
-- Thanks a lot to stneng,ZYHowell and many other people for helping me a lot.
-- Thanks Pioooooo for display_ctrl related codes.
+- Thanks a lot to **stneng, ZYHowell** and many other people for helping me a lot.
+- Thanks **Pioooooo** for *display_ctrl* related codes.
 
 ### Repo Structure
 
